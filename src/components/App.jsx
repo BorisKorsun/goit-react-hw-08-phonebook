@@ -12,7 +12,7 @@ import Phonebook from 'components/Phonebook/';
 import Contacts from 'components/Contacts';
 import Filter from 'components/Filter';
 import UserMenu from 'components/UserMenu';
-import { Register } from 'pages';
+import { RegisterPage, LoginPage } from 'pages';
 
 export default function App() {
   const [filter, setFilter] = useState('');
@@ -52,7 +52,8 @@ export default function App() {
   return (
     <>
       <ToastContainer />
-      <Register />
+      <RegisterPage />
+      <LoginPage />
       <UserMenu />
       <Section title="Phonebook">
         <Phonebook onSubmit={onSubmitForm} />

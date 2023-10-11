@@ -1,4 +1,8 @@
+import { useSignUpUserMutation } from 'redux/authApi';
+
 export default function RegisterForm() {
+  const [signUpUser] = useSignUpUserMutation();
+
   const onSubmit = e => {
     e.preventDefault();
     const { elements } = e.target.form;
@@ -7,7 +11,7 @@ export default function RegisterForm() {
       email: elements.email.value,
       password: elements.password.value,
     };
-    console.log(newUser);
+    signUpUser(newUser);
   };
   return (
     <form>

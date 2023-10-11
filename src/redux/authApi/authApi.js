@@ -1,21 +1,62 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import axios from 'axios';
+
+// const setAuthHeader = token => {
+//   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+// };
+
+// const clearAuthHeader = () => {
+//   axios.defaults.headers.common.Authorization = '';
+// };
+
+const axiosBaseQuery =
+  ({ baseUrl } = { baseUrl: '' }) =>
+  async ({ url, method, data, params, headers }) => {
+    try {
+      const result = await axios({
+        url: baseUrl + url,
+        method,
+        data,
+        params,
+        headers,
+      });
+
+      console.log(result);
+      //   if (!result.data.token) {
+      //     return clearAuthHeader();
+      //   }
+
+      //   setAuthHeader(result.data.token);
+
+      return { data: result.data };
+    } catch (axiosError) {
+      console.log('catched axiosError');
+      const err = axiosError;
+      return {
+        error: {
+          status: err.response?.status,
+          data: err.response?.data || err.message,
+        },
+      };
+    }
+  };
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
+  baseQuery: axiosBaseQuery({
     baseUrl: 'https://connections-api.herokuapp.com',
   }),
   endpoints: build => ({
     signUpUser: build.mutation({
       query: body => ({
-        url: 'user/signup',
-        method: 'POST',
+        url: '/users/signup',
+        method: 'post',
         body,
       }),
     }),
     logInUser: build.mutation({
       query: body => ({
-        url: 'user/login',
+        url: '/users/login',
         method: 'POST',
         body,
       }),
