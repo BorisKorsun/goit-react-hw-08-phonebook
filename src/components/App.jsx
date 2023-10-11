@@ -1,9 +1,11 @@
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { usePrevious } from 'hooks';
-import { fetchAllContacts, addContact } from 'redux/contactsSlice/operations';
+import {
+  useFetchAllContactsQuery,
+  useAddContactMutation,
+} from 'redux/contactsApi';
 
 import Section from 'components/Section';
 import Phonebook from 'components/Phonebook/';
@@ -12,21 +14,17 @@ import Filter from 'components/Filter';
 
 export default function App() {
   const [filter, setFilter] = useState('');
-  const contacts = useSelector(state => state.contacts.items);
-  const prevContacts = usePrevious(contacts)
-  const dispatch = useDispatch();
+  const { data: contacts = [], isFetching } = useFetchAllContactsQuery();
+  const [addContact] = useAddContactMutation();
+  const prevContacts = usePrevious(contacts);
 
   useEffect(() => {
-    dispatch(fetchAllContacts());
-  }, [dispatch]);
+    if (contacts > prevContacts) {
+      toast.success('Contact was added succesfully');
+    }
 
-  useEffect(() => {
-    if(contacts > prevContacts) {
-      toast.success('Contact was added succesfully')
-    };
-
-    if(contacts < prevContacts) {
-      toast.success('Contact was deleted succesfully')
+    if (contacts < prevContacts) {
+      toast.success('Contact was deleted succesfully');
     }
   }, [contacts, prevContacts]);
 
@@ -34,13 +32,13 @@ export default function App() {
     setFilter(e.target.value);
   };
 
-  const onSubmitForm = async ({ name, phone }) => {
+  const onSubmitForm = ({ name, phone }) => {
     const isContact = contacts.find(contact => contact.name === name);
     if (isContact) {
       toast.error(`${name} is already exists`);
       return;
     }
-    await dispatch(addContact({ name, phone }));
+    addContact({ name, phone });
   };
 
   const filterContacts = () => {
@@ -57,7 +55,7 @@ export default function App() {
       </Section>
       <Section title="Contacts">
         <Filter filter={filter} onFilterChange={onFilterChange} />
-        <Contacts contacts={filterContacts()} />
+        <Contacts isLoading={isFetching} contacts={filterContacts()} />
       </Section>
     </>
   );

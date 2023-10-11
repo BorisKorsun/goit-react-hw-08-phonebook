@@ -1,10 +1,8 @@
 import { DeleteBtn, Item } from './Contacts.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from 'redux/contactsSlice';
+import {useDeleteContactMutation} from 'redux/contactsApi'
 
-export default function ContactsListItem({ id, name, phone }) {
-  const dispatch = useDispatch();
-  const isLoading = useSelector(state => state.contacts.isLoading);
+export default function ContactsListItem({ id, name, phone, isLoading }) {
+  const [deleteContact] = useDeleteContactMutation();
 
   return (
     <Item>
@@ -12,7 +10,7 @@ export default function ContactsListItem({ id, name, phone }) {
         {name}: {phone}
       </p>
       <DeleteBtn
-        onClick={() => dispatch(deleteContact(id))}
+        onClick={() => deleteContact(id)}
         disabled={isLoading}
         type="button"
       >
