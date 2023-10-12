@@ -1,7 +1,8 @@
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Route, Routes } from 'react-router';
 import { useEffect, useState } from 'react';
 import { usePrevious } from 'hooks';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   useFetchAllContactsQuery,
   useAddContactMutation,
@@ -52,16 +53,30 @@ export default function App() {
   return (
     <>
       <ToastContainer />
-      <RegisterPage />
-      <LoginPage />
       <UserMenu />
+      <Routes>
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="contacts"
+          element={
+            <Section>
+              <Filter filter={filter} onFilterChange={onFilterChange} />
+              <Contacts isLoading={isFetching} contacts={filterContacts()} />
+            </Section>
+          }
+        />
+      </Routes>
+
+      {/* <LoginPage />
+
       <Section title="Phonebook">
         <Phonebook onSubmit={onSubmitForm} />
       </Section>
       <Section title="Contacts">
         <Filter filter={filter} onFilterChange={onFilterChange} />
         <Contacts isLoading={isFetching} contacts={filterContacts()} />
-      </Section>
+      </Section> */}
     </>
   );
 }
