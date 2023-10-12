@@ -1,13 +1,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
 
-// const setAuthHeader = token => {
-//   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-// };
+const setAuthHeader = token => {
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+};
 
-// const clearAuthHeader = () => {
-//   axios.defaults.headers.common.Authorization = '';
-// };
+const clearAuthHeader = () => {
+  axios.defaults.headers.common.Authorization = '';
+};
 
 const axiosBaseQuery =
   ({ baseUrl } = { baseUrl: '' }) =>
@@ -20,18 +20,20 @@ const axiosBaseQuery =
         params,
         headers,
       });
+      console.log(result.data);
+      if (!result.data.token) {
+        console.log(axios.defaults.headers.common.Authorization);
+        return clearAuthHeader();
+      }
 
-      console.log(result);
-      //   if (!result.data.token) {
-      //     return clearAuthHeader();
-      //   }
-
-      //   setAuthHeader(result.data.token);
+      setAuthHeader(result.data.token);
+      console.log(axios.defaults.headers.common.Authorization);
 
       return { data: result.data };
     } catch (axiosError) {
       console.log('catched axiosError');
       const err = axiosError;
+      console.log(axiosError);
       return {
         error: {
           status: err.response?.status,
@@ -50,15 +52,15 @@ export const authApi = createApi({
     signUpUser: build.mutation({
       query: body => ({
         url: '/users/signup',
-        method: 'post',
-        body,
+        method: 'POST',
+        data: { ...body },
       }),
     }),
     logInUser: build.mutation({
       query: body => ({
         url: '/users/login',
         method: 'POST',
-        body,
+        data: { ...body },
       }),
     }),
   }),

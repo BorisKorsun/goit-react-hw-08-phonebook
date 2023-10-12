@@ -5,7 +5,12 @@ export default function LoginForm() {
   const onSubmitForm = e => {
     e.preventDefault();
     const { elements } = e.target.form;
-    const user = { email: elements.email, password: elements.password };
+
+    const user = {
+      email: elements.email.value,
+      password: elements.password.value,
+    };
+    console.log(user);
     logInUser(user);
   };
   return (
