@@ -60,23 +60,18 @@ export default function App() {
         <Route
           path="contacts"
           element={
-            <Section>
-              <Filter filter={filter} onFilterChange={onFilterChange} />
-              <Contacts isLoading={isFetching} contacts={filterContacts()} />
-            </Section>
+            <>
+              <Section title="Phonebook">
+                <Phonebook onSubmit={onSubmitForm} />
+              </Section>
+              <Section>
+                <Filter filter={filter} onFilterChange={onFilterChange} />
+                <Contacts isLoading={isFetching} contacts={filterContacts()} />
+              </Section>
+            </>
           }
         />
       </Routes>
-
-      {/* <LoginPage />
-
-      <Section title="Phonebook">
-        <Phonebook onSubmit={onSubmitForm} />
-      </Section>
-      <Section title="Contacts">
-        <Filter filter={filter} onFilterChange={onFilterChange} />
-        <Contacts isLoading={isFetching} contacts={filterContacts()} />
-      </Section> */}
     </>
   );
 }
